@@ -2,6 +2,7 @@ import cv2
 from PIL import ImageTk, Image
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
+import filters  # Import custom filters
 
 class FilterApp:
     def __init__(self, root):
@@ -21,6 +22,10 @@ class FilterApp:
         # Active filter
         self.active_filter = tk.StringVar(value="Original")
 
+        # Contrast filter variables
+        self.alpha = tk.DoubleVar(value=1.0)
+        self.beta = tk.DoubleVar(value=0)
+
         # ------------------- Widgets -------------------
 
         # Main container to center content
@@ -34,15 +39,28 @@ class FilterApp:
         # Filter selection menu
         self.filter_menu = ttk.Combobox(
             self.main_frame, textvariable=self.active_filter,
-            values=["Original"],
-            state="readonly", width=20, font=("Arial", 12, "bold")
+            values=["Original", "Contrast"],
+            state="readonly", width=20
         )
         self.filter_menu.pack(pady=5)
 
+        # Sliders for contrast filter
+        self.contrast_alpha_slider = tk.Scale(self.main_frame,
+            label="Alpha (Contrast)", orient=tk.HORIZONTAL,
+            from_=0.5, to=3.0,resolution=0.1,
+            variable=self.alpha)
+
+        self.contrast_beta_slider = tk.Scale(self.main_frame,
+            label="Beta (Brightness)", orient=tk.HORIZONTAL,
+            from_=-100, to=100, resolution=1,
+            variable=self.beta)
+
         # Capture and save button
-        self.btn_capture = tk.Button(
-            self.main_frame, text="Capture & Save", command=self.capture_and_save)
+        self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
         self.btn_capture.pack(pady=5)
+
+        # Detect filter change and update UI
+        self.filter_menu.bind("<<ComboboxSelected>>", self.update_parameters_ui)
 
         # Close camera when exiting
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -53,10 +71,31 @@ class FilterApp:
     def show_camera_feed(self):
         ret, frame = self.cap.read()
         if ret:
-            self.current_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            selected_filter = self.active_filter.get()
+
+            if selected_filter == "Contrast":
+                alpha = self.alpha.get()
+                beta = self.beta.get()
+                frame = filters.contrast(frame, alpha, beta)
+
+            self.current_frame = frame
             self.display_image(self.current_frame)
 
         self.root.after(30, self.show_camera_feed)  
+
+    def update_parameters_ui(self, event=None):
+        selected_filter = self.active_filter.get()
+
+        # Hide all sliders first
+        self.contrast_alpha_slider.pack_forget()
+        self.contrast_beta_slider.pack_forget()
+
+        # Show contrast sliders if contrast filter is selected
+        if selected_filter == "Contrast":
+            self.contrast_alpha_slider.pack(pady=5)
+            self.contrast_beta_slider.pack(pady=5)
 
     def display_image(self, image):
         image = Image.fromarray(image)
