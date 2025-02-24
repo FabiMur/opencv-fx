@@ -21,3 +21,14 @@ def posterize(image: np.ndarray, levels: int = 1) -> np.ndarray:
     image[:] = (image.astype(np.int32) // factor) * factor
 
     return image
+
+# Applays blur to the image ussing a kernel full of 1s
+def blur(image: np.ndarray, kernel_size: int = 3) -> np.ndarray:
+    if kernel_size < 1:
+        return image
+
+    # Ensure kerlen size is odd
+    kernel_size = max(3, kernel_size | 1)
+    kernel = np.ones((kernel_size, kernel_size), dtype=np.float32) / (kernel_size ** 2)
+
+    return cv2.filter2D(image, -1, kernel)

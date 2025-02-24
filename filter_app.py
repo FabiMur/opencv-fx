@@ -29,6 +29,9 @@ class FilterApp:
         # Posterization filter variables
         self.posterization_levels = tk.IntVar(value=1)
 
+        # Blur filter variables
+        self.blur_strength = tk.IntVar(value=1)
+
         # ------------------- Widgets -------------------
 
         # Main container to center content
@@ -42,7 +45,7 @@ class FilterApp:
         # Filter selection menu
         self.filter_menu = ttk.Combobox(
             self.main_frame, textvariable=self.active_filter,
-            values=["Original", "Contrast", "Posterization"],
+            values=["Original", "Contrast", "Posterization", "Blur"],
             state="readonly", width=20
         )
         self.filter_menu.pack(pady=5)
@@ -63,6 +66,12 @@ class FilterApp:
             label="Posterization Levels", orient=tk.HORIZONTAL,
             from_=1, to=64, resolution=1,
             variable=self.posterization_levels)
+
+        # Slider for blur effect
+        self.blur_slider = tk.Scale(self.main_frame,
+            label="Blur Strength", orient=tk.HORIZONTAL,
+            from_=1, to=255, resolution=2,  # Always odd values
+            variable=self.blur_strength)
 
         # Capture and save button
         self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
@@ -92,6 +101,10 @@ class FilterApp:
             elif selected_filter == "Posterization":
                 levels = self.posterization_levels.get()
                 frame = filters.posterize(frame, levels)
+            
+            elif selected_filter == "Blur":
+                kernel_size = self.blur_strength.get()
+                frame = filters.blur(frame, kernel_size)
 
             self.current_frame = frame
             self.display_image(self.current_frame)
@@ -105,6 +118,7 @@ class FilterApp:
         self.contrast_alpha_slider.pack_forget()
         self.contrast_beta_slider.pack_forget()
         self.posterization_slider.pack_forget()
+        self.blur_slider.pack_forget()
 
         # Show contrast sliders if contrast filter is selected
         if selected_filter == "Contrast":
@@ -114,6 +128,9 @@ class FilterApp:
         # Show posterization sliders if posterization filter is selected
         elif selected_filter == "Posterization":
             self.posterization_slider.pack(pady=5)
+
+        elif selected_filter == "Blur":
+            self.blur_slider.pack(pady=5)
 
     def display_image(self, image):
         image = Image.fromarray(image)
