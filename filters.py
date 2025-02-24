@@ -12,11 +12,12 @@ def contrast(image: np.ndarray, alpha: float = 1.0, beta: int = 0) -> np.ndarray
     return image
 
 # Reduces the color resolution of the image
-def posterize(image: np.ndarray, levels: int = 4) -> np.ndarray:
+def posterize(image: np.ndarray, levels: int = 1) -> np.ndarray:
     if levels < 2:
-        return image  
+        return image
 
     factor = 255 // (levels - 1)
-    posterized = (image // factor) * factor
 
-    return posterized.astype(np.uint8)
+    image[:] = (image.astype(np.int32) // factor) * factor
+
+    return image
