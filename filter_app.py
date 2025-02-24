@@ -26,6 +26,9 @@ class FilterApp:
         self.alpha = tk.DoubleVar(value=1.0)
         self.beta = tk.DoubleVar(value=0)
 
+        # Posterization filter variables
+        self.posterization_levels = tk.IntVar(value=1)
+
         # ------------------- Widgets -------------------
 
         # Main container to center content
@@ -39,7 +42,7 @@ class FilterApp:
         # Filter selection menu
         self.filter_menu = ttk.Combobox(
             self.main_frame, textvariable=self.active_filter,
-            values=["Original", "Contrast"],
+            values=["Original", "Contrast", "Posterization"],
             state="readonly", width=20
         )
         self.filter_menu.pack(pady=5)
@@ -54,6 +57,12 @@ class FilterApp:
             label="Beta (Brightness)", orient=tk.HORIZONTAL,
             from_=-255, to=255, resolution=1,
             variable=self.beta)
+
+        # Posterization filter variables and sliders
+        self.posterization_slider = tk.Scale(self.main_frame,
+            label="Posterization Levels", orient=tk.HORIZONTAL,
+            from_=1, to=64, resolution=1,
+            variable=self.posterization_levels)
 
         # Capture and save button
         self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
@@ -80,6 +89,10 @@ class FilterApp:
                 beta = self.beta.get()
                 frame = filters.contrast(frame, alpha, beta)
 
+            elif selected_filter == "Posterization":
+                levels = self.posterization_levels.get()
+                frame = filters.posterize(frame, levels)
+
             self.current_frame = frame
             self.display_image(self.current_frame)
 
@@ -96,6 +109,10 @@ class FilterApp:
         if selected_filter == "Contrast":
             self.contrast_alpha_slider.pack(pady=5)
             self.contrast_beta_slider.pack(pady=5)
+
+        # Show posterization sliders if posterization filter is selected
+        elif selected_filter == "Posterization":
+            self.posterization_slider.pack(pady=5)
 
     def display_image(self, image):
         image = Image.fromarray(image)
