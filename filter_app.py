@@ -47,12 +47,12 @@ class FilterApp:
         # Sliders for contrast filter
         self.contrast_alpha_slider = tk.Scale(self.main_frame,
             label="Alpha (Contrast)", orient=tk.HORIZONTAL,
-            from_=0.5, to=3.0,resolution=0.1,
+            from_=0.0, to=3.0,resolution=0.1,
             variable=self.alpha)
 
         self.contrast_beta_slider = tk.Scale(self.main_frame,
             label="Beta (Brightness)", orient=tk.HORIZONTAL,
-            from_=-100, to=100, resolution=1,
+            from_=-255, to=255, resolution=1,
             variable=self.beta)
 
         # Capture and save button
