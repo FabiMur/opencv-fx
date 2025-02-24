@@ -104,6 +104,7 @@ class FilterApp:
         # Hide all sliders first
         self.contrast_alpha_slider.pack_forget()
         self.contrast_beta_slider.pack_forget()
+        self.posterization_slider.pack_forget()
 
         # Show contrast sliders if contrast filter is selected
         if selected_filter == "Contrast":
