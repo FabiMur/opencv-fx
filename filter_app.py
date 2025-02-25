@@ -32,6 +32,9 @@ class FilterApp:
         # Blur filter variables
         self.blur_strength = tk.IntVar(value=1)
 
+        # Alien filter variables
+        self.alien_color = tk.StringVar(value="none")
+
         # ------------------- Widgets -------------------
 
         # Main container to center content
@@ -45,7 +48,7 @@ class FilterApp:
         # Filter selection menu
         self.filter_menu = ttk.Combobox(
             self.main_frame, textvariable=self.active_filter,
-            values=["Original", "Contrast", "Posterization", "Blur"],
+            values=["Original", "Contrast", "Posterization", "Blur", "Alien"],
             state="readonly", width=20
         )
         self.filter_menu.pack(pady=5)
@@ -72,6 +75,12 @@ class FilterApp:
             label="Blur Strength", orient=tk.HORIZONTAL,
             from_=1, to=255, resolution=2,  # Always odd values
             variable=self.blur_strength)
+
+        # Alien filter color selection
+        self.alien_color = ttk.Combobox(
+            self.main_frame, textvariable=self.alien_color,
+            values=["none", "red", "green", "blue"], state="readonly", width=10
+        )
 
         # Capture and save button
         self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
@@ -106,6 +115,10 @@ class FilterApp:
                 kernel_size = self.blur_strength.get()
                 frame = filters.blur(frame, kernel_size)
 
+            elif selected_filter == "Alien":
+                chosen_color = self.alien_color.get()
+                frame = filters.alien(frame, chosen_color)
+
             self.current_frame = frame
             self.display_image(self.current_frame)
 
@@ -119,6 +132,7 @@ class FilterApp:
         self.contrast_beta_slider.pack_forget()
         self.posterization_slider.pack_forget()
         self.blur_slider.pack_forget()
+        self.alien_color.pack_forget()
 
         # Show contrast sliders if contrast filter is selected
         if selected_filter == "Contrast":
@@ -131,6 +145,9 @@ class FilterApp:
 
         elif selected_filter == "Blur":
             self.blur_slider.pack(pady=5)
+
+        if selected_filter == "Alien":
+            self.alien_color.pack(pady=5)  # Show only when Alien is selected
 
     def display_image(self, image):
         image = Image.fromarray(image)
