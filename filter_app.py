@@ -35,6 +35,11 @@ class FilterApp:
         # Alien filter variables
         self.alien_color = tk.StringVar(value="none")
 
+        # Distortion effect variables
+        self.barrel_k = tk.DoubleVar(value=0.0) 
+        self.pincushion_k = tk.DoubleVar(value=0.0)
+
+
         # ------------------- Widgets -------------------
 
         # Main container to center content
@@ -48,7 +53,7 @@ class FilterApp:
         # Filter selection menu
         self.filter_menu = ttk.Combobox(
             self.main_frame, textvariable=self.active_filter,
-            values=["Original", "Contrast", "Posterization", "Blur", "Alien"],
+            values=["Original", "Contrast", "Posterization", "Blur", "Alien", "Distortion"],
             state="readonly", width=20
         )
         self.filter_menu.pack(pady=5)
@@ -81,6 +86,17 @@ class FilterApp:
             self.main_frame, textvariable=self.alien_color,
             values=["none", "red", "green", "blue"], state="readonly", width=10
         )
+
+        # Distortion effect sliders
+        self.barrel_k_slider = tk.Scale(self.main_frame,
+            label="Barrel Distortion", orient=tk.HORIZONTAL,
+            from_=-0.5, to=0.5, resolution=0.01,
+            variable=self.barrel_k)
+
+        self.pincushion_k_slider = tk.Scale(self.main_frame,
+            label="Pincushion Distortion", orient=tk.HORIZONTAL,
+            from_=-0.5, to=0.5, resolution=0.01,
+            variable=self.pincushion_k)
 
         # Capture and save button
         self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
@@ -119,6 +135,12 @@ class FilterApp:
                 chosen_color = self.alien_color.get()
                 frame = filters.alien(frame, chosen_color)
 
+            elif selected_filter == "Distortion":
+                barrel_k = self.barrel_k.get()
+                pincushion_k = self.pincushion_k.get()
+                frame = filters.distort(frame, barrel_k, pincushion_k)
+
+
             self.current_frame = frame
             self.display_image(self.current_frame)
 
@@ -133,6 +155,8 @@ class FilterApp:
         self.posterization_slider.pack_forget()
         self.blur_slider.pack_forget()
         self.alien_color.pack_forget()
+        self.barrel_k_slider.pack_forget()
+        self.pincushion_k_slider.pack_forget()
 
         # Show contrast sliders if contrast filter is selected
         if selected_filter == "Contrast":
@@ -147,7 +171,11 @@ class FilterApp:
             self.blur_slider.pack(pady=5)
 
         if selected_filter == "Alien":
-            self.alien_color.pack(pady=5)  # Show only when Alien is selected
+            self.alien_color.pack(pady=5)
+
+        if selected_filter == "Distortion":
+            self.barrel_k_slider.pack(pady=5)
+            self.pincushion_k_slider.pack(pady=5)
 
     def display_image(self, image):
         image = Image.fromarray(image)
