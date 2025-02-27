@@ -91,12 +91,15 @@ class FilterApp:
         self.barrel_k_slider = tk.Scale(self.main_frame,
             label="Barrel Distortion", orient=tk.HORIZONTAL,
             from_=-0.5, to=0.5, resolution=0.01,
-            variable=self.barrel_k)
+            variable=self.barrel_k,
+            length=140)
+
 
         self.pincushion_k_slider = tk.Scale(self.main_frame,
             label="Pincushion Distortion", orient=tk.HORIZONTAL,
             from_=-0.5, to=0.5, resolution=0.01,
-            variable=self.pincushion_k)
+            variable=self.pincushion_k,
+            length=140)
 
         # Capture and save button
         self.btn_capture = tk.Button(self.main_frame, text="Capture & Save", command=self.capture_and_save)
