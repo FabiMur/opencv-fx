@@ -82,7 +82,7 @@ class FilterApp:
             variable=self.blur_strength)
 
         # Alien filter color selection
-        self.alien_color = ttk.Combobox(
+        self.alien_color_widget = ttk.Combobox(
             self.main_frame, textvariable=self.alien_color,
             values=["none", "red", "green", "blue"], state="readonly", width=10
         )
@@ -135,7 +135,7 @@ class FilterApp:
                 frame = filters.blur(frame, kernel_size)
 
             elif selected_filter == "Alien":
-                chosen_color = self.alien_color.get()
+                chosen_color = self.alien_color_widget.get()
                 frame = filters.alien(frame, chosen_color)
 
             elif selected_filter == "Distortion":
@@ -157,7 +157,7 @@ class FilterApp:
         self.contrast_beta_slider.pack_forget()
         self.posterization_slider.pack_forget()
         self.blur_slider.pack_forget()
-        self.alien_color.pack_forget()
+        self.alien_color_widget.pack_forget()
         self.barrel_k_slider.pack_forget()
         self.pincushion_k_slider.pack_forget()
 
@@ -174,7 +174,7 @@ class FilterApp:
             self.blur_slider.pack(pady=5)
 
         if selected_filter == "Alien":
-            self.alien_color.pack(pady=5)
+            self.alien_color_widget.pack(pady=5)
 
         if selected_filter == "Distortion":
             self.barrel_k_slider.pack(pady=5)
