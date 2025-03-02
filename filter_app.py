@@ -2,7 +2,7 @@ import cv2
 from PIL import ImageTk, Image
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
-import filters  # Import custom filters
+import filters
 
 class FilterApp:
     def __init__(self, root):
@@ -40,7 +40,7 @@ class FilterApp:
         self.pincushion_k = tk.DoubleVar(value=0.0)
 
 
-        # ------------------- Widgets -------------------
+        # ------------------- Sliders, Buttons and Dropdowns -------------------
 
         # Main container to center content
         self.main_frame = tk.Frame(root, bg="white")  
