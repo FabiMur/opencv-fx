@@ -69,9 +69,9 @@ def alien(image: np.ndarray, color: str = "none") -> np.ndarray:
     return image
 
 # Applies the barrel and/or pincushion distortion effect to the image
-def distort(image: np.ndarray, k_barrel: float = 0.0, k_pincushion: float = 0.0) -> np.ndarray:
+def distort(image: np.ndarray, k: float = 0.0) -> np.ndarray:
     # Skip effect calculation if both parameters are 0
-    if k_pincushion == 0 and k_barrel == 0:
+    if k == 0:
         return image
 
     # Read the dimensions of the image
@@ -87,27 +87,15 @@ def distort(image: np.ndarray, k_barrel: float = 0.0, k_pincushion: float = 0.0)
     # Compute the distance to the center of each pixel position
     r = np.sqrt(x_n**2 + y_n**2)
 
-    # Initialize distorted coordinates
-    x_n_distorted = x_n
-    y_n_distorted = y_n
-
-    # Apply barrel distortion effect
-    # If k is POSITIVE, pixels move AWAY from the center
-    # If k is NEGATIVE, pixels move TOWARD the center
-    if k_barrel != 0:
-        x_n_distorted = x_n * (1 + k_barrel * r**2)
-        y_n_distorted = y_n * (1 + k_barrel * r**2)
-
-    # Apply pincushion distortion
-    # If k is POSITIVE, pixels move TOWARD the center
-    # If k is NEGATIVE, pixels move AWAY from the center
-    if k_pincushion != 0:
-        x_n_distorted *= (1 + k_pincushion * r**4)
-        y_n_distorted *= (1 + k_pincushion * r**4)
+    # Apply distortion effect
+    # If k is POSITIVE, barrel
+    # If k is NEGATIVE, pincushion
+    x_distorted = x_n * (1 + k * r**2)
+    y_distorted = y_n * (1 + k * r**2)
 
     # Convert normalized coordinates back to pixel coordinates
-    x_distorted = (x_n_distorted * (width / 2) + width / 2).astype(np.float32)
-    y_distorted = (y_n_distorted * (height / 2) + height / 2).astype(np.float32)
+    x_distorted = (x_distorted * (width / 2) + width / 2).astype(np.float32)
+    y_distorted = (y_distorted * (height / 2) + height / 2).astype(np.float32)
 
     # Reassign pixels to their new coordinates
     distorted_image = cv2.remap(image, x_distorted, y_distorted, interpolation=cv2.INTER_LINEAR)

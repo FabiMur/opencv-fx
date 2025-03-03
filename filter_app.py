@@ -36,9 +36,7 @@ class FilterApp:
         self.alien_color = tk.StringVar(value="none")
 
         # Distortion effect variables
-        self.barrel_k = tk.DoubleVar(value=0.0) 
-        self.pincushion_k = tk.DoubleVar(value=0.0)
-
+        self.distortion_k = tk.DoubleVar(value=0.0) 
 
         # ------------------- Sliders, Buttons and Dropdowns -------------------
 
@@ -88,17 +86,10 @@ class FilterApp:
         )
 
         # Distortion effect sliders
-        self.barrel_k_slider = tk.Scale(self.main_frame,
-            label="Barrel Distortion", orient=tk.HORIZONTAL,
-            from_=-0.5, to=0.5, resolution=0.01,
-            variable=self.barrel_k,
-            length=140)
-
-
-        self.pincushion_k_slider = tk.Scale(self.main_frame,
+        self.k_slider = tk.Scale(self.main_frame,
             label="Pincushion Distortion", orient=tk.HORIZONTAL,
             from_=-0.5, to=0.5, resolution=0.01,
-            variable=self.pincushion_k,
+            variable=self.distortion_k,
             length=140)
 
         # Capture and save button
@@ -139,9 +130,8 @@ class FilterApp:
                 frame = filters.alien(frame, chosen_color)
 
             elif selected_filter == "Distortion":
-                barrel_k = self.barrel_k.get()
-                pincushion_k = self.pincushion_k.get()
-                frame = filters.distort(frame, barrel_k, pincushion_k)
+                distortion_k = self.distortion_k.get()
+                frame = filters.distort(frame, distortion_k)
 
 
             self.current_frame = frame
@@ -158,8 +148,7 @@ class FilterApp:
         self.posterization_slider.pack_forget()
         self.blur_slider.pack_forget()
         self.alien_color_widget.pack_forget()
-        self.barrel_k_slider.pack_forget()
-        self.pincushion_k_slider.pack_forget()
+        self.k_slider.pack_forget()
 
         # Show contrast sliders if contrast filter is selected
         if selected_filter == "Contrast":
@@ -177,8 +166,7 @@ class FilterApp:
             self.alien_color_widget.pack(pady=5)
 
         if selected_filter == "Distortion":
-            self.barrel_k_slider.pack(pady=5)
-            self.pincushion_k_slider.pack(pady=5)
+            self.k_slider.pack(pady=5)
 
     def display_image(self, image):
         image = Image.fromarray(image)
