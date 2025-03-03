@@ -42,8 +42,8 @@ def alien(image: np.ndarray, color: str = "none") -> np.ndarray:
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
 
     # Specify the color space that will be identified as skin
-    lower_skin = np.array([5, 50, 150], dtype=np.uint8)
-    upper_skin = np.array([15, 160, 220], dtype=np.uint8)
+    lower_skin = np.array([0, 50, 80], dtype=np.uint8)
+    upper_skin = np.array([20, 255, 255], dtype=np.uint8)
 
     # Create mask for skin detection
     mask = cv2.inRange(hsv, lower_skin, upper_skin)
