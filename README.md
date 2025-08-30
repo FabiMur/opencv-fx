@@ -21,3 +21,9 @@ Real-time image processing app using OpenCV.
 | Blur | Alien | Distortion |
 |------|-------|------------|
 | ![Blur](images/LennaBlur.jpg) | ![Alien](images/LennaAlien.jpg) | ![Distortion](images/LennaDistortion.jpg) |
+
+## Live Camera Filter Examples
+
+| Original | Contrast | Distortion |
+|----------|----------|------------|
+| ![Live Original](images/live_original.png) | ![Live Contrast](images/live_contrast.png) | ![Live Distortion](images/live_distortion.png) |
